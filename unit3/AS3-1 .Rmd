@@ -1,6 +1,6 @@
 ---
 title: "AS3-1: 數位偵探"
-author: "第 17 組 周俊德"
+author: "第 17 組"
 date: "`r Sys.time()`"
 output: 
   html_document:
@@ -46,46 +46,55 @@ pacman::p_load(dplyr, d3heatmap)
 
 【1.1】How many rows of data (observations) are in this dataset?
 ```{r}
-nrow(mvtWeek1)
+#載入csv檔
+data = read.csv("data/mvtWeek1.csv")
+#data筆數
+nrow(data)
 ```
+答案：191641筆
 
 檢查各欄位的資料格式
 ```{r}
-str(mvtWeek1)
+#用summary檢查各欄位的資料格式
+summary(data)
 ```
 
 類別(Factor) versus 字串(Character)
 
 【1.2】How many variables are in this dataset?
 ```{r}
-str(mvtWeek1)
-#11 variable 
+#用ncol找dataset中有多少變數
+ncol(data)
 ```
-
+答案：11
 
 【1.3】Using the "max" function, what is the maximum value of the variable "ID"?
 ```{r}
-max(mvtWeek1$ID)
+#用max()找最大值
+max(data$ID)
 ```
-
+答案：9181151
 
 【1.4】 What is the minimum value of the variable "Beat"?
 ```{r}
-min(mvtWeek1$Beat)
+#用min()找最小值
+min(data$Beat)
 ```
-
+答案：111
 
 【1.5】 How many observations have value TRUE in the Arrest variable (this is the number of crimes for which an arrest was made)?
 ```{r}
-table(mvtWeek1$Arrest == TRUE)
-# 15536
+#用sum加總
+sum(data$Arrest==TRUE)
 ```
+答案：15536
 
 【1.6】 How many observations have a LocationDescription value of ALLEY?
 ```{r}
-table(mvtWeek1$LocationDescription == "ALLEY")
+#
+sum(data$LocationDescription=="ALLEY")
 ```
-
+答案：2308
 
 <br><br>
 
@@ -101,48 +110,43 @@ table(mvtWeek1$LocationDescription == "ALLEY")
 + Hour:Minute Day/Month/Year
 
 ```{r}
-format(mvtWeek1$Date)
-# Month/Day/Year Hour:Minute
+#原本的格式
+data$Date[1]
+#轉換成日期格式後
+data$Date = as.POSIXct(data$Date, format="%m/%d/%y %H:%M")
+data$Date[1]
 ```
-
-```{r}
-#
-```
-
-```{r}
-#
-```
-
-```{r fig.height=2.5, fig.width=8}
-#
-```
-
+答案：Month/Day/Year Hour:Minute
 
 【2.2】 What is the month and year of the median date in our dataset? 
 ```{r}
-DateConvert = as.Date(strptime(mvtWeek1$Date, "%m/%d/%y %H:%M"))
-median(DateConvert)
-## 2006-05
+#用median函數找日期中位數
+median(data$Date)
 ```
+答案：2006年5月
 
 【2.3】 In which month did the fewest motor vehicle thefts occur?
 ```{r}
-mvtWeek1$Month = months(DateConvert)
-mvtWeek1$Weekday = weekdays(DateConvert)
-table(mvtWeek1$Month)
-##2月
+#以月份為分類加總各個月份的資料數
+#再用sort由小到大排列後取最小的
+sort(table(format(data$Date,"%m")))
 ```
+答案：2月
 
 【2.4】 On which weekday did the most motor vehicle thefts occur?
 ```{r}
-table(mvtWeek1$Weekday)
-##週五
+#將日期以星期(weekdays)為分類計算總數(table)後
+#再用sort從大到小排序
+data$Date %>% weekdays() %>% table() %>% sort(decreasing = TRUE)
 ```
+答案：週五
 
 【2.5】 Which month has the largest number of motor vehicle thefts for which an arrest was made?
 ```{r}
-table(mvtWeek1$Month[mvtWeek1$Arrest == "TRUE" ])
+#以月份為分類，計算逮捕的總數，再由大到小排列。
+sort(tapply(data$Arrest,format(data$Date,"%m"),sum),decreasing = TRUE)
 ```
+答案：一月
 
 <br><br>
 
@@ -152,41 +156,52 @@ table(mvtWeek1$Month[mvtWeek1$Arrest == "TRUE" ])
 
 【3.1】 (a) In general, does it look like crime increases or decreases from 2002 - 2012? (b) In general, does it look like crime increases or decreases from 2005 - 2008? (c) In general, does it look like crime increases or decreases from 2009 - 2011?
 ```{r}
-hist(mvtWeek1$Date, breaks=100)
-str(mvtWeek1$Date)
-mvtWeek1$Date <- as.Date(mvtWeek1$Date, "%m/%d/%y %H:%M") ##轉成日期格式才可以繪圖
-
-# (A) decrease (B) decrease (C) increase 
+library(ggplot2)
+#用ggplot繪製折線圖
+#dataPlot=ggplot(data,mapping = aes(x=data$Date,y=length(data))+geom_line()
+hist(data$Date,'year')
 ```
+<\n>
+答案：2002～2012減少，2005~2008減少，2009~2011增加。
 
 【3.2】 Does it look like there were more crimes for which arrests were made in the first half of the time period or the second half of the time period?
 ```{r}
- boxplot(mvtWeek1$Date ~ mvtWeek1$Arrest)
-# First half 
+#先選出有逮捕到的資料
+dataarrest = subset(data,data$Arrest==TRUE)
+#以2007年為分界，計算前後兩階段的總數
+table(dataarrest$Date>=as.POSIXct("2007-01-01"))
 ```
+答案：有被逮捕的數量，在2007年以前比較多。
 
 【3.3】 For what proportion of motor vehicle thefts in 2001 was an arrest made?
 ```{r}
-mean(mvtWeek1$Year == 2001 & mvtWeek1$Arrest == "TRUE")
+#先取出2001年間的所有資料
+data2001 = subset(data,Date>=as.POSIXct("2001-01-01") & Date<=as.POSIXct("2001-12-31"))
 
-table(mvtWeek1$Arrest, mvtWeek1$Year) 
-2152/(2152+18517) 
-## 0.1041 
+#再以年份、是否被逮捕計算總數後pipe到prop.table計算比率
+table(data2001$Arrest,format(data2001$Date,"%Y")) %>% prop.table(2) %>% round(3)
 ```
+答案：0.104
 
 【3.4】 For what proportion of motor vehicle thefts in 2007 was an arrest made?
 ```{r}
-mean(mvtWeek1$Year == 2007 & mvtWeek1$Arrest == "TRUE")
+#先取出2007年間的所有資料
+data2007 = subset(data,Date>=as.POSIXct("2007-01-01") & Date<=as.POSIXct("2007-12-31"))
 
-1212/(13608+1212)
-## 0.08178
+#再以年份、是否被逮捕計算總數後pipe到prop.table計算比率
+table(data2007$Arrest,format(data2007$Date,"%Y")) %>% prop.table(2) %>% round(3)
 ```
+答案：0.085
 
 【3.5】 For what proportion of motor vehicle thefts in 2012 was an arrest made?
 ```{r}
-550/(13542+550)
-## 0.03903
+##先取出2012年間的所有資料
+data2012 = subset(data,Date>=as.POSIXct("2012-01-01") & Date<=as.POSIXct("2012-12-31"))
+
+#再以年份、是否被逮捕計算總數後pipe到prop.table計算比率
+table(data2012$Arrest,format(data2012$Date,"%Y")) %>% prop.table(2) %>% round(3)
 ```
+答案：0.039
 
 <br><br>
 
@@ -197,46 +212,44 @@ mean(mvtWeek1$Year == 2007 & mvtWeek1$Arrest == "TRUE")
 【4.1】 Which locations are the top five locations for motor vehicle thefts, excluding the "Other" category? You should select 5 of the following options.
 
 ```{r}
-
-TopLocations = c("STREET", "PARKING LOT/GARAGE(NON.RESID.)", "ALLEY", "GAS STATION", "DRIVEWAY - RESIDENTIAL")
-Top5 = subset(mvtWeek1, LocationDescription %in% TopLocations)
-
+#以地區為分類計算總數後排序
+sort(table(data$LocationDescription),decreasing = TRUE)[1:6]
 ```
+答案：STREET、PARKING LOT/GARAGE(NON.RESID.)、ALLEY、GAS STATION、DRIVEWAY - RESIDENTIAL
 
 【4.2】 How many observations are in Top5?
 ```{r}
-nrow(Top5)
-## 177510
+#以地區為分類計算總數後排序，因為other排在第三，所以取出前六
+#然後去除掉other所在的第三項資料後，將所有的數量加總
+sum(sort(table(data$LocationDescription),decreasing = TRUE)[1:6][-3])
 ```
+答案：177510
 
 【4.3】 One of the locations has a much higher arrest rate than the other locations. Which is it? 
 ```{r}
-table(Top5$LocationDescription, Top5$Arrest) 
+topname = names(sort(table(data$LocationDescription),decreasing = TRUE)[1:6][-3])
 
-## Gas Station 
+topdata = subset(data,LocationDescription %in% topname)
+
+tapply(topdata$Arrest,topdata$LocationDescription,mean) %>% sort(decreasing = TRUE)
 ```
+答案：GAS STATION
 
 【4.4】 On which day of the week do the most motor vehicle thefts at gas stations happen?
 ```{r}
- table(Top5$LocationDescription, Top5$Weekday)
-# 週六
+#取出地點在GAS STATION的資料後，以星期為分類傳入table()中計算總數
+#然後再由大到小排序
+data$Date[data$LocationDescription=="GAS STATION"] %>% weekdays() %>% table() %>% sort(decreasing = TRUE)
 ```
+答案：週六
 
 【4.5】 On which day of the week do the fewest motor vehicle thefts in residential driveways happen?
 ```{r}
-a <- table(Top5$LocationDescription, Top5$Weekday)  %>% as.data.frame() 
-
-sum(a$Freq[a$Var2 == "週一"]) #25288
-sum(a$Freq[a$Var2 == "週二"]) #24797
-sum(a$Freq[a$Var2 == "週三"]) #25298
-sum(a$Freq[a$Var2 == "週四"]) #25238
-sum(a$Freq[a$Var2 == "週五"]) #27078
-sum(a$Freq[a$Var2 == "週六"]) #25255
-sum(a$Freq[a$Var2 == "週日"]) #24556
-
-#週四
+#取出地點在DRIVEWAY - RESIDENTIAL的資料後，以星期為分類傳入table()中計算總數
+#然後再由小到大排序
+data$Date[data$LocationDescription=="DRIVEWAY - RESIDENTIAL"] %>% weekdays() %>% table() %>% sort()
 ```
-
+答案：週六
 
 <br><br><br>
 
