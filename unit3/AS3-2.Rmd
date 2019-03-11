@@ -48,6 +48,7 @@ pacman::p_load(dplyr)
 
 __§ 1.1__ Our five datasets all have the same number of observations. How many observations are there in each data set?
 ```{r}
+#讀取資料
 IBM <- read.csv("data/IBMStock.csv")
 PG <- read.csv("data/ProcterGambleStock.csv")
 Co <- read.csv("data/CocaColaStock.csv")
@@ -55,7 +56,7 @@ Bo <- read.csv("data/BoeingStock.csv")
 GE <- read.csv("data/GEStock.csv")
 
 nrow(IBM)
-##480 
+##答:480 
 ```
 
 
