@@ -62,6 +62,7 @@ nrow(IBM)
 
 __§ 1.2__ What is the earliest year in our datasets?
 ```{r}
+#轉換時間格式
 IBM$Date = as.Date(IBM$Date, "%m/%d/%y")
 
 GE$Date = as.Date(GE$Date, "%m/%d/%y")
@@ -72,59 +73,70 @@ PG$Date = as.Date(PG$Date, "%m/%d/%y")
 
 Bo$Date = as.Date(Bo$Date, "%m/%d/%y")
 
+#找出最早的時間點
 min(IBM$Date)
 min(GE$Date)
 min(Co$Date)
 min(PG$Date)
 min(Bo$Date)
 
-## 1997-01-01
+##答:1997-01-01
 ```
 
 __§ 1.3__ What is the latest year in our datasets?
 ```{r}
+#找出最晚的時間點
 max(IBM$Date)
 max(GE$Date)
 max(Co$Date)
 max(PG$Date)
 max(Bo$Date)
 
-# 2009-12-01
+##答:2009-12-01
 ```
 
 __§ 1.4__ What is the mean stock price of IBM over this time period?
 ```{r}
+#平均股價
 mean(IBM$StockPrice)
 
-#144.4
+##答:144.4
 ```
 
 __§ 1.5__ What is the minimum stock price of General Electric (GE) over this time period?
 ```{r}
+#General Electric的最低股價
 min(GE$StockPrice)
 
-#9.294 
+##答:9.294 
 ```
 
 __§ 1.6__ What is the maximum stock price of Coca-Cola over this time period?
 ```{r}
+
+#Coca-Cola的最高股價
 max(Co$StockPrice)
 
-#146.6
+##答:146.6
 ```
 
 __§ 1.7__ What is the median stock price of Boeing over this time period?
 ```{r}
+
+#Boeing中位數
 median(Bo$StockPrice)
 
-## 44.8 
+
+##答:44.8 
 ```
 
 __§ 1.8__ What is the standard deviation of the stock price of Procter & Gamble over this time period?
 ```{r}
+
+
 sd(PG$StockPrice)
 
-##18.19
+##答:18.19
 ```
 
 <br><hr>
