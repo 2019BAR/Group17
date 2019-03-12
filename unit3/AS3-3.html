@@ -235,7 +235,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">AS3-3: 美國的人口統計和就業資料</h1>
 <h4 class="author"><em>第 17 組 ray</em></h4>
-<h4 class="date"><em>2019-03-12 10:35:34</em></h4>
+<h4 class="date"><em>2019-03-12 12:44:18</em></h4>
 
 </div>
 
@@ -259,9 +259,9 @@ $(document).ready(function () {
 <li><code>Industry</code>: 受訪者的就業行業（僅在受僱的情況下可用）。</li>
 </ul>
 <hr />
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">CPS&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;CPSData.csv&quot;</span>)
-MetroAreaCodes&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroAreaCodes.csv&quot;</span>)
-CountryCodes&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;CountryCodes.csv&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">CPS&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;data/CPSData.csv&quot;</span>)
+MetroAreaCodes&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;data/MetroAreaCodes.csv&quot;</span>)
+CountryCodes&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;data/CountryCodes.csv&quot;</span>)</code></pre></div>
 <p><br><br></p>
 <div id="section-1-loading-and-summarizing-the-dataset" class="section level3">
 <h3>Section-1 Loading and Summarizing the Dataset</h3>
@@ -312,12 +312,15 @@ Agriculture, forestry, fishing, and hunting                                Armed
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which.max</span>(<span class="kw">table</span>(CPS<span class="op">$</span>State))</code></pre></div>
 <pre><code>California 
          5 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#california</span></code></pre></div>
 <p><strong>§ 1.4</strong> What proportion of interviewees are citizens of the United States?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(CPS<span class="op">$</span>Citizenship)</code></pre></div>
 <pre><code>
      Citizen, Native Citizen, Naturalized          Non-Citizen 
               116639                 7073                 7590 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#(116639+7073 )/131302</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dv">116639</span><span class="op">+</span><span class="dv">7073</span> )<span class="op">/</span><span class="dv">131302</span></code></pre></div>
+<pre><code>[1] 0.9422</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#0.9421</span></code></pre></div>
 <p><strong>§ 1.5</strong> For which races are there at least 250 interviewees in the CPS dataset of Hispanic ethnicity? (Select all that apply.)</p>
 <ul>
 <li>American Indian</li>
@@ -578,12 +581,12 @@ District of Columbia           New Jersey         Rhode Island
 <div id="section-3-integrating-metropolitan-area-data" class="section level3">
 <h3>Section-3 Integrating Metropolitan Area Data</h3>
 <p><strong>§ 3.1</strong> How many observations (codes for metropolitan areas) are there in MetroAreaMap?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MetroAreaMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;CountryCodes.csv&quot;</span>)
-CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroAreaCodes.csv&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MetroAreaMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;data/CountryCodes.csv&quot;</span>)
+CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;data/MetroAreaCodes.csv&quot;</span>)
 <span class="kw">str</span>(CountryMap)</code></pre></div>
 <pre><code>'data.frame':   271 obs. of  2 variables:
  $ Code     : int  460 3000 3160 3610 3720 6450 10420 10500 10580 10740 ...
- $ MetroArea: Factor w/ 271 levels &quot;Akron, OH&quot;,&quot;Albany-Schenectady-Troy, NY&quot;,..: 12 92 97 117 122 195 1 3 2 4 ...</code></pre>
+ $ MetroArea: Factor w/ 271 levels &quot;Akron, OH&quot;,&quot;Albany, GA&quot;,..: 13 92 98 117 122 195 1 2 3 4 ...</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(CountryMap)</code></pre></div>
 <pre><code>[1] 271</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#271</span></code></pre></div>
@@ -918,17 +921,16 @@ CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroArea
                        MetroArea     
  Appleton-Oshkosh-Neenah, WI:     1  
  Akron, OH                  :     0  
- Albany-Schenectady-Troy, NY:     0  
  Albany, GA                 :     0  
+ Albany-Schenectady-Troy, NY:     0  
  Albuquerque, NM            :     0  
  (Other)                    :     0  
  NA's                       :131301  </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Country Map</span></code></pre></div>
 <p>How many interviewees have a missing value for the new metropolitan area variable?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">is.na</span>(CPS<span class="op">$</span>Country))</code></pre></div>
-<pre><code>
-  TRUE 
-131302 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">is.na</span>(CPS<span class="op">$</span>Country))</code></pre></div>
+<pre><code>[1] 131302</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#176</span></code></pre></div>
 <p><strong>§ 4.2</strong> Among all interviewees born outside of North America, which country was the most common place of birth?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(CPS)</code></pre></div>
 <pre><code> CountryOfBirthCode MetroAreaCode   PeopleInHousehold       Region     
@@ -974,8 +976,8 @@ CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroArea
                        MetroArea     
  Appleton-Oshkosh-Neenah, WI:     1  
  Akron, OH                  :     0  
- Albany-Schenectady-Troy, NY:     0  
  Albany, GA                 :     0  
+ Albany-Schenectady-Troy, NY:     0  
  Albuquerque, NM            :     0  
  (Other)                    :     0  
  NA's                       :131301  </code></pre>
@@ -1115,13 +1117,13 @@ CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroArea
                              0                              0 
            Trinidad and Tobago                         Turkey 
                              0                              0 
-          U. S. Virgin Islands                         Uganda 
+          U. S. Virgin Islands                           USSR 
                              0                              0 
-                       Ukraine                 United Kingdom 
+                        Uganda                        Ukraine 
                              0                              0 
-                 United States                        Uruguay 
+                United Kingdom                  United States 
                              0                              0 
-                          USSR                     Uzbekistan 
+                       Uruguay                     Uzbekistan 
                              0                              0 
                      Venezuela                        Vietnam 
                              0                              0 
@@ -1133,8 +1135,10 @@ CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroArea
                              0 </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#mexico </span></code></pre></div>
 <p><strong>§ 4.3</strong> What proportion of the interviewees from the “New York-Northern New Jersey-Long Island, NY-NJ-PA” metropolitan area have a country of birth that is not the United States?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(CPS<span class="op">$</span>MetroArea <span class="op">==</span><span class="st"> &quot;New York-Northern New Jersey-Long Island, NY-NJ-PA&quot;</span>, CPS<span class="op">$</span>Country <span class="op">!=</span><span class="st"> &quot;United States&quot;</span>)</code></pre></div>
-<pre><code>&lt; table of extent 1 x 0 &gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">!=</span><span class="st"> &quot;United States&quot;</span>, CPS<span class="op">$</span>MetroArea <span class="op">==</span><span class="st"> &quot;New York-Northern New Jersey-Long Island, NY-NJ-PA&quot;</span>, mean, <span class="dt">na.rm =</span> T)</code></pre></div>
+<pre><code>FALSE 
+  NaN </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#0.0387</span></code></pre></div>
 <p><strong>§ 4.4</strong> Which metropolitan area has the largest number (note – not proportion) of interviewees with a country of birth in India?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##sum(c(TRUE, FALSE, TRUE, TRUE)) is 3
 <span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;India&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),<span class="dt">decreasing =</span> T) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</code></pre></div>
@@ -1142,22 +1146,15 @@ CountryMap&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;MetroArea
                           0 </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#new york </span></code></pre></div>
 <p>In Brazil?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;India&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>Appleton-Oshkosh-Neenah, WI 
-                          0 </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;Brazil&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>Appleton-Oshkosh-Neenah, WI 
                           0 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;Somalia&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>Appleton-Oshkosh-Neenah, WI 
-                          0 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;Brazil&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),<span class="dt">decreasing =</span> T) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</code></pre></div>
-<pre><code>Appleton-Oshkosh-Neenah, WI 
-                          0 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Boston-Canbridge-Quincy, MA-NH</span></code></pre></div>
 <p>In Somalia?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sort</span>(<span class="kw">tapply</span>(CPS<span class="op">$</span>Country <span class="op">==</span><span class="st"> &quot;Somalia&quot;</span>, CPS<span class="op">$</span>MetroArea, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),<span class="dt">decreasing =</span> T) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</code></pre></div>
 <pre><code>Appleton-Oshkosh-Neenah, WI 
                           0 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Minneapolis-St Paul-Bloomington, MN-WI</span></code></pre></div>
 <p><br><br><br></p>
 </div>
 
